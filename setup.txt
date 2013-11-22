@@ -1,0 +1,30 @@
+Requirements
+
+- git client >= 1.8.0
+- virtualbox >= 4.2.6
+- http://downloads.vagrantup.com/tags/v1.3.5
+
+Editor settings
+
+- indent with spaces
+- unix line endings
+
+Steps
+
+- vagrant init precise32 http://files.vagrantup.com/precise32.box
+- mkdir submodules
+- git submodule add git@github.com:opscode-cookbooks/build-essential.git cookbooks/build-essential
+- git submodule add git@github.com:balbeko/chef-npm.git cookbooks/npm
+- git submodule add git@github.com:mdxp/nodejs-cookbook.git cookbooks/nodejs
+- git submodule add git@github.com:opscode-cookbooks/apt.git cookbooks/apt
+- git submodule add git@github.com:opscode-cookbooks/git.git cookbooks/git
+- git submodule add git@github.com:customink-webops/phantomjs.git cookbooks/phantomjs
+- vagrant up
+- yo angular
+- bower install angular-route --save
+- grunt serve
+
+After cloning
+
+- git submodule init
+- git submodule update
