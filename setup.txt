@@ -22,6 +22,8 @@ Steps
 - vagrant up
 - yo angular
 - bower install angular-route --save
+- add angular route to index.html
+- edit Gruntfile.js hostname and livereload for outside access
 - grunt serve
 
 After cloning
