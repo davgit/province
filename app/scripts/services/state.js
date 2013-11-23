@@ -3,7 +3,8 @@
 angular.module('provinceApp').factory('State', function() {
 
 	return {
-    signedIn: null
+    signedIn: null,
+    accessToken: null
 	};
 
 });

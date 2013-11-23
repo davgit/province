@@ -1,0 +1,11 @@
+div.visible {
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+
+.hidden {
+  position: absolute;
+  left: -999px;
+  top: -999px;
+}

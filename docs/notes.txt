@@ -1,3 +1,26 @@
 Writing to Google spreadsheets using nodejs
 
 - https://github.com/wf9a5m75/winston-google-spreadsheet/blob/master/lib/winston-google-spreadsheet.js
+
+Checking sign in status
+
+$window.signInScriptLoadedCallback = google.signInScriptLoadedCallback;
+
+
+signInScriptLoadedCallback: function() {
+  //google.checkAndUpdateSignInState();
+}
+
+checkAndUpdateSignInState: function() {
+
+  var sessionParams = {
+    'client_id': appConfig.googleClientId,
+    'session_state': null
+  };
+
+  window.gapi.auth.checkSessionState(sessionParams, function(status) {
+    $rootScope.$apply(function() {
+      State.signedIn = !status; // Docs say true == logged in but that's not what's happening...
+    });
+  });
+}

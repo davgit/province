@@ -1,4 +1,4 @@
-<div ng-show="state.signedIn !== null && !state.signedIn">
+<div class="hidden" ng-class="{ 'hidden': state.signedIn, 'visible': state.signedIn !== null && !state.signedIn }">
   <span id="signinButton">
     <span
       class="g-signin"
