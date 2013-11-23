@@ -5,6 +5,8 @@
 
 angular.module('provinceApp').factory('GoogleSignIn', function($window, State, $rootScope, appConfig) {
 
+  $window.___gcfg = { isSignedOut: true }; // http://goo.gl/gLkVXw
+
 	var google = {
 
 		signInScriptLoadedCallback: function() {
