@@ -7,8 +7,9 @@ angular.module('provinceApp').controller('MainCtrl', function ($scope, State, Go
 
   $scope.$watch('state', function(a, b) {
     
-    if (a === b)
+    if (a === b) {
       return;
+    }
 
     // ...
 

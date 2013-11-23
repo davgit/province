@@ -5,7 +5,9 @@
 
 angular.module('provinceApp').factory('GoogleSignIn', function($window, State, $rootScope, appConfig) {
 
-  $window.___gcfg = { isSignedOut: true }; // http://goo.gl/gLkVXw
+  $window.___gcfg = {
+    isSignedOut: true
+  };
 
 	var google = {
 
@@ -20,7 +22,7 @@ angular.module('provinceApp').factory('GoogleSignIn', function($window, State, $
         'session_state': null
       };
 
-      gapi.auth.checkSessionState(sessionParams, function(status) {
+      window.gapi.auth.checkSessionState(sessionParams, function(status) {
         $rootScope.$apply(function() {
           State.signedIn = !status; // Docs say true == logged in but that's not what's happening...
         });
@@ -28,12 +30,15 @@ angular.module('provinceApp').factory('GoogleSignIn', function($window, State, $
     },
 
 		addScript: function() {
-      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      var po = document.createElement('script');
+      po.type = 'text/javascript';
+      po.async = true;
       po.src = 'https://apis.google.com/js/client:plusone.js?onload=signInScriptLoadedCallback';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(po, s);
 		},
 
-    signInCallback: function(authResult) {
+    signInCallback: function() { // authResult
       google.checkAndUpdateSignInState();
     }
 	};
