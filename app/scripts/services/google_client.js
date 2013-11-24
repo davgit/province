@@ -4,19 +4,14 @@
 // https://developers.google.com/+/web/api/javascript?hl=fi
 // https://developers.google.com/drive/auth/web-client
 
-angular.module('provinceApp').factory('GoogleClient', function($window, State, $rootScope, appConfig, GoogleRealtime) {
+angular.module('provinceApp').factory('GoogleClient', function($window, State, $rootScope, appConfig, GoogleRealtime, Utils) {
 
 	var google = {
 
     authScopes: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
 
 		addScript: function() {
-      var po = document.createElement('script');
-      po.type = 'text/javascript';
-      po.async = true;
-      po.src = 'https://apis.google.com/js/client.js?onload=handleClientLoad';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(po, s);
+      Utils.addScript('https://apis.google.com/js/client.js?onload=handleClientLoad');
 		},
 
     handleClientLoad: function() {

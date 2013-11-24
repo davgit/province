@@ -39,18 +39,15 @@
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
     </script>
-
-    
-    <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
-
-    <script src="scripts/utils/realtime_client_utils.js"></script>
-
+   
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/services/utils.js"></script>
+    <script src="scripts/services/ip.js"></script>
     <script src="scripts/services/state.js"></script>
     <script src="scripts/services/google_client.js"></script>
     <script src="scripts/services/google_realtime.js"></script>
