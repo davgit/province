@@ -24,3 +24,7 @@ checkAndUpdateSignInState: function() {
     });
   });
 }
+
+JavaScript Drive API
+
+- https://developers.google.com/drive/quickstart-js

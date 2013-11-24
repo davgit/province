@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('provinceApp').controller('MainCtrl', function ($scope, State, GoogleSignIn, appConfig) {
+angular.module('provinceApp').controller('MainCtrl', function ($scope, State, GoogleSignIn, GoogleDrive, appConfig) {
 	
   $scope.state = State;
   $scope.googleClientId = appConfig.googleClientId;
@@ -10,6 +10,8 @@ angular.module('provinceApp').controller('MainCtrl', function ($scope, State, Go
     if (a === b) {
       return;
     }
+
+    GoogleDrive.startRealtime()
 
     // ...
 
