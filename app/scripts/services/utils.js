@@ -9,7 +9,7 @@ angular.module('provinceApp').factory('Utils', function() {
       po.type = 'text/javascript';
       po.src = url;
       var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(po, s);      
+      s.parentNode.insertBefore(po, s);
     }
   };
 

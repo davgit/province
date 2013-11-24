@@ -50,6 +50,8 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
       if (list.indexOf(State.publicIp) === -1) {
         list.push(State.publicIp);
       }
+
+      console.log('loaded clients: ' + list.asArray().join(','));
     },
 
     createNewRealtimeFile: function() {
