@@ -121,6 +121,7 @@ rtclient.Authorizer = function(options) {
  */
 rtclient.Authorizer.prototype.start = function(onAuthComplete) {
   var _this = this;
+  console.log('auth:client,drive-realtime,drive-share')
   gapi.load('auth:client,drive-realtime,drive-share', function() {
     _this.authorize(onAuthComplete);
   });

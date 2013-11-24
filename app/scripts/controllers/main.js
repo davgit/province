@@ -1,22 +1,18 @@
 'use strict';
 
-angular.module('provinceApp').controller('MainCtrl', function ($scope, State, GoogleSignIn, GoogleDrive, appConfig) {
+angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scope, State, GoogleClient, GoogleRealtime, appConfig) {
 	
   $scope.state = State;
   $scope.googleClientId = appConfig.googleClientId;
 
-  $scope.$watch('state', function(a, b) {
-    
-    if (a === b) {
-      return;
-    }
+  $rootScope.$on('signedIn', function() {
+    GoogleRealtime.addScript();
+  });
 
-    GoogleDrive.startRealtime()
+  $rootScope.$on('clientsChanged', function(event, list) {
+    console.log(list)
+  });
 
-    // ...
-
-  }, true);
-
-	GoogleSignIn.addScript();
+	GoogleClient.addScript();
 
 });
