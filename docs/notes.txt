@@ -28,3 +28,12 @@ checkAndUpdateSignInState: function() {
 JavaScript Drive API
 
 - https://developers.google.com/drive/quickstart-js
+
+WebRTC
+
+- https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection
+- https://github.com/muaz-khan/WebRTC-Experiment/tree/master/RTCPeerConnection
+- http://www.simpl.info/rtcdatachannel/
+-- https://github.com/samdutton/simpl/tree/master/rtcdatachannel
+- http://biswebrtc.blogspot.fi/2013/02/start-developing-using.html
+- http://www.w3.org/TR/webrtc/#peer-to-peer-connections
