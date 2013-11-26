@@ -96,3 +96,24 @@ a=rtpmap:13 CN/8000
 a=rtpmap:126 telephone-event/8000
 a=maxptime:60
 "
+
+Sharing drive files
+
+https://developers.google.com/drive/manage-sharing
+https://developers.google.com/drive/v2/reference/permissions/insert
+
+Parameters application/x-www-form-urlencoded
+app 2
+authuser  0
+clientUser  17847033603244958588
+confirmed false
+foreignService  explorer
+hl  en_US
+itemIds 0B9bg9aXL_oUWRmUtd1BHaFZndkU
+modelChanges  {"aclEntries":[{"scope":{"scopeType":"anyone","name":"Anyone","id":"anyone","me":true,"requiresKey":true},"role":30},{"scope":{"scopeType":"anyone","name":"Anyone","id":"anyone","me":true,"requiresKey":false},"role":0}]}
+requestType aclChange
+shareProtocolVersion  2
+shareService  explorer
+subapp  10
+token cUkkt0IBAAA.iZ3E6Yll3l2mHuSqtkPO6w.mv0-Wi6VZr54hEC4pJimnA
+ui  4
