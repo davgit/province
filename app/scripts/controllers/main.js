@@ -1,21 +1,20 @@
 'use strict';
 
-angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scope, State, GoogleClient, GoogleRealtime, appConfig, Ip) {
+angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scope, State, GoogleClient, GoogleRealtime, appConfig, Ip, $log) {
 	
   $scope.state = State;
   $scope.googleClientId = appConfig.googleClientId;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  var ua = navigator.userAgent.toLowerCase();
-  var prefix = '';
+  var clientKey = cookie.get('clientKey');
 
-  // basic sniffing
-  if (ua.indexOf('firefox') !== -1) {
-      prefix = 'moz';
-  } else if (ua.indexOf('chrome') !== -1) {
-      prefix = 'webkit';
+  if (!clientKey) {
+    clientKey = Math.random().toString(36).slice(2);
+    cookie.set('clientKey', clientKey);
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
   GoogleClient.addScript();
 
@@ -33,7 +32,7 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
 
   var offerConstraints = {
     mandatory: { 
-      OfferToReceiveAudio: false, 
+      OfferToReceiveAudio: false,
       OfferToReceiveVideo: false
     }
   };
@@ -41,33 +40,92 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
   var pc = new PeerConnection(connectionOptions, connectionConstraints);
   var dc = pc.createDataChannel('province');
 
+    dc.onmessage = function (event) {
+        alert("Server: " + event.data);
+    };
+
+    dc.onopen = function () {
+        channel.send("Hello Server!");
+    };
+
+  navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  //var getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   $rootScope.$on('signedIn', function() {
-    //if (!State.publicIp) {
-//      $scope.ipCannotBeResolved = true;
-    //} else {
       GoogleRealtime.addScript();
-  //  }
   });
 
-  $rootScope.$on('clientsChanged', function(event, map) {
-    console.log(map.toString());
+  $rootScope.$on('realtimeLoaded', function(event) {
+
+    navigator.getUserMedia({'audio': true, fake: true}, function (stream) {
+
+      console.log("Got local audio", stream);
+      pc.addStream(stream);
+
+        // Create offer and send it to drive
+        pc.offer(offerConstraints, function(blank, offer) {
+          $log.debug('Offer created:');
+          $log.debug(JSON.stringify(offer));
+          GoogleRealtime.map.set(clientKey, btoa(JSON.stringify(offer)));
+        })
+
+
+    }, function () {});    
   });
 
-  $rootScope.$on('clientsLoaded', function(event) {
+  var processed = [];
 
-    pc.offer(offerConstraints, function(blank, offer) {
-      console.log('local offer created')
-      GoogleRealtime.map.set(prefix, JSON.stringify(offer));
-    })
+  
+  $rootScope.$on('realtimeValueChanged', function(event, map) {
+    //map.clear()
+
+    $log.debug('realtimeValueChanged:');
+    $log.debug(map.toString());
+    
+
+    // Iterate all offers in realtime map and pick the ones that are not our own
+    for (var index in map.keys()) {
+      
+      var key = map.keys()[index];
+      var value = map.get(key);
+
+      if (clientKey !== key) {
+
+        if (processed.indexOf(key) !== -1) {
+          return;
+        }
+
+        var offer = JSON.parse(atob(value));
+
+        processed.push(key);
+
+        /*pc.handleOffer(offer);
+        
+
+        setTimeout(function() {
+          $log.debug(pc.pc);
+        }, 1000);*/
+
+        //pc.handleOffer(offer);
+        
+          pc.answer(offer, offerConstraints, function(blank, answer) {
+            $log.debug('answer callback')
+            $log.debug(blank)
+            $log.debug(answer)
+          });
+        
+
+
+      }
+    }
+
     
   });
 
-  
   // Ip.addScript();
-
-  console.log(pc)
 
   /*pc.ondatachannel = function(event) {
     receiveChannel = event.channel;
@@ -76,19 +134,23 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
     };
   };*/
 
-  
-
-
   pc.on('ice', function (candidate) {
-    //console.log('on ice')
-    //console.log(candidate)
+
+
+
+   // $log.debug(JSON.stringify(candidate))
+
+    /*var array = JSON.parse(GoogleRealtime.map.get(clientKey)) || []
+    var candidateString = JSON.stringify(candidate);
+    if (array.indexOf(candidateString) === -1) {
+      array.push(candidateString);
+    }
+
+
+    GoogleRealtime.map.set(clientKey, JSON.stringify(array));*/
     //pc.processIce(candidate)
     //connection.send('ice', candidate);
-  });
-  
-
-
-  
+  })
 
   //pc.handleAnswer(answer);
   

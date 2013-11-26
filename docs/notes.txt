@@ -31,6 +31,9 @@ JavaScript Drive API
 
 WebRTC
 
+- http://stackoverflow.com/questions/17391750/remote-videostream-not-working-with-webrtc
+- http://stackoverflow.com/questions/14134090/how-is-a-webrtc-peer-connection-established
+
 - http://www.html5rocks.com/en/tutorials/webrtc/basics/
 
 - https://github.com/cjb/serverless-webrtc

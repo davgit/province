@@ -249,6 +249,7 @@ PeerConnection.prototype.offer = function (constraints, cb) {
     this.pc.createOffer(
         function (offer) {
             offer.sdp = self._applySdpHack(offer.sdp);
+            // if (webrtc.prefix == 'moz') self._applyMozIceHack(offer.sdp);
             self.pc.setLocalDescription(offer);
             self.emit('offer', offer);
             if (callback) callback(null, offer);
@@ -260,6 +261,26 @@ PeerConnection.prototype.offer = function (constraints, cb) {
         mediaConstraints
     );
 };
+
+// See: http://stackoverflow.com/questions/15484729/why-doesnt-onicecandidate-work
+/*PeerConnection.prototype._applyMozIceHack = function (sdp) {
+    
+    console.log('moz ice hack')
+    
+    var lines = sdp.split('\n');
+    for (var index in lines) {
+        var line = lines[index];
+        if (line.indexOf('a=candidate') != -1) {
+            console.log(line)
+            var candidate = {
+                "sdpMLineIndex": 0,
+                "sdpMid": "data",
+                "candidate": line + "\n"
+            }
+            this.processIce(candidate);
+        }
+    }
+}*/
 
 // Answer an offer with audio only
 PeerConnection.prototype.answerAudioOnly = function (offer, cb) {
@@ -298,6 +319,13 @@ PeerConnection.prototype.answer = function (offer, constraints, cb) {
     this._answer(offer, mediaConstraints, callback);
 };
 
+
+// Process an answer
+PeerConnection.prototype.handleOffer = function (offer, callback) {
+    this.pc.setRemoteDescription(new webrtc.SessionDescription(offer));
+};
+
+
 // Process an answer
 PeerConnection.prototype.handleAnswer = function (answer) {
     this.pc.setRemoteDescription(new webrtc.SessionDescription(answer));
@@ -309,10 +337,14 @@ PeerConnection.prototype.close = function () {
     this.emit('close');
 };
 
-// Internal code sharing for various types of answer methods
+// Internal code sharing for various types of answer methods - FIXED:
+// The second parameter to setRemoteDescription is a completion callback. Call createAnswer from within the callback to avoid a race condition.
+// http://goo.gl/iciBKa
 PeerConnection.prototype._answer = function (offer, constraints, cb) {
     var self = this;
-    this.pc.setRemoteDescription(new webrtc.SessionDescription(offer));
+    this.pc.setRemoteDescription(new webrtc.SessionDescription(offer), function() {
+        console.log('TEHER IS A CALLBACK!')
+    });
     this.pc.createAnswer(
         function (answer) {
             answer.sdp = self._applySdpHack(answer.sdp);
@@ -325,6 +357,7 @@ PeerConnection.prototype._answer = function (offer, constraints, cb) {
         },
         constraints
     );
+
 };
 
 // Internal method for emitting ice candidates on our peer object
