@@ -342,9 +342,7 @@ PeerConnection.prototype.close = function () {
 // http://goo.gl/iciBKa
 PeerConnection.prototype._answer = function (offer, constraints, cb) {
     var self = this;
-    this.pc.setRemoteDescription(new webrtc.SessionDescription(offer), function() {
-        console.log('TEHER IS A CALLBACK!')
-    });
+    this.pc.setRemoteDescription(new webrtc.SessionDescription(offer));
     this.pc.createAnswer(
         function (answer) {
             answer.sdp = self._applySdpHack(answer.sdp);
@@ -362,6 +360,8 @@ PeerConnection.prototype._answer = function (offer, constraints, cb) {
 
 // Internal method for emitting ice candidates on our peer object
 PeerConnection.prototype._onIce = function (event) {
+    console.log('ICE PERKEL')
+    console.log(event)
     if (event.candidate) {
         this.emit('ice', event.candidate);
     } else {
