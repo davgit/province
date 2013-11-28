@@ -2,48 +2,26 @@ Writing to Google spreadsheets using nodejs
 
 - https://github.com/wf9a5m75/winston-google-spreadsheet/blob/master/lib/winston-google-spreadsheet.js
 
-Checking sign in status
-
-$window.signInScriptLoadedCallback = google.signInScriptLoadedCallback;
-
-
-signInScriptLoadedCallback: function() {
-  //google.checkAndUpdateSignInState();
-}
-
-checkAndUpdateSignInState: function() {
-
-  var sessionParams = {
-    'client_id': appConfig.googleClientId,
-    'session_state': null
-  };
-
-  window.gapi.auth.checkSessionState(sessionParams, function(status) {
-    $rootScope.$apply(function() {
-      State.signedIn = !status; // Docs say true == logged in but that's not what's happening...
-    });
-  });
-}
-
 JavaScript Drive API
 
 - https://developers.google.com/drive/quickstart-js
 
-WebRTC
+Sharing drive files
+
+- https://developers.google.com/drive/manage-sharing
+- https://developers.google.com/drive/v2/reference/permissions/insert
+
+WebRTC info sources
 
 - https://www.webrtc-experiment.com/docs/rtc-datachannel-for-beginners.html
 -- working example for both ff and chrome
-
 - https://www.webrtc-experiment.com/docs/rtc-datachannel-for-beginners.html
 - http://stackoverflow.com/questions/14134090/how-is-a-webrtc-peer-connection-established
-
 - http://stackoverflow.com/questions/17391750/remote-videostream-not-working-with-webrtc
 - http://www.html5rocks.com/en/tutorials/webrtc/basics/
-
 - https://github.com/cjb/serverless-webrtc
 -- https://github.com/cjb/serverless-webrtc/blob/master/js/serverless-webrtc.js
 - https://github.com/HenrikJoreteg/RTCPeerConnection
-
 - https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection
 - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/RTCPeerConnection
 - http://www.simpl.info/rtcdatachannel/
@@ -57,7 +35,7 @@ Configuration examples
 var configuration = { "iceServers": [{ "url": "stun:stun.example.org" }] };
 var configuration = {"iceServers":[{"url":"stun:23.21.150.121"}]}, con = { 'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true }] };
 
-Offer data
+Offer example
 
 {"type":"offer","sdp":"v=0\r\no=Mozilla-SIPUA-25.0.1 6090 0 IN IP4 0.0.0.0\r\ns=SIP Call\r\nt=0 0\r\na=ice-ufrag:7cf7540d\r\na=ice-pwd:c59d50299fb518e279d6385e4128f3b9\r\na=fingerprint:sha-256 DA:AE:2D:1B:C4:28:0C:4C:C1:D8:83:68:5B:05:D1:89:83:63:85:B5:D4:92:B2:19:89:FC:06:30:4B:BB:17:5F\r\nm=audio 50709 RTP/SAVPF 109 0 8 101\r\nc=IN IP4 89.27.90.164\r\na=rtpmap:109 opus/48000/2\r\na=ptime:20\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:101 telephone-event/8000\r\na=fmtp:101 0-15\r\na=sendrecv\r\na=candidate:0 1 UDP 2128609535 192.168.0.10 50709 typ host\r\na=candidate:1 1 UDP 1692467199 89.27.90.164 50709 typ srflx raddr 192.168.0.10 rport 50709\r\na=candidate:0 2 UDP 2128609534 192.168.0.10 50710 typ host\r\na=candidate:1 2 UDP 1692467198 89.27.90.164 50710 typ srflx raddr 192.168.0.10 rport 50710\r\nm=application 50711 DTLS/SCTP 5000 \r\nc=IN IP4 89.27.90.164\r\na=fmtp:5000 protocol=webrtc-datachannel;streams=16\r\na=sendrecv\r\na=candidate:0 1 UDP 2128609535 192.168.0.10 50711 typ host\r\na=candidate:1 1 UDP 1692467199 89.27.90.164 50711 typ srflx raddr 192.168.0.10 rport 50711\r\na=candidate:0 2 UDP 2128609534 192.168.0.10 50712 typ host\r\na=candidate:1 2 UDP 1692467198 89.27.90.164 50712 typ srflx raddr 192.168.0.10 rport 50712\r\n"}
 
@@ -103,24 +81,3 @@ a=rtpmap:13 CN/8000
 a=rtpmap:126 telephone-event/8000
 a=maxptime:60
 "
-
-Sharing drive files
-
-https://developers.google.com/drive/manage-sharing
-https://developers.google.com/drive/v2/reference/permissions/insert
-
-Parameters application/x-www-form-urlencoded
-app 2
-authuser  0
-clientUser  17847033603244958588
-confirmed false
-foreignService  explorer
-hl  en_US
-itemIds 0B9bg9aXL_oUWRmUtd1BHaFZndkU
-modelChanges  {"aclEntries":[{"scope":{"scopeType":"anyone","name":"Anyone","id":"anyone","me":true,"requiresKey":true},"role":30},{"scope":{"scopeType":"anyone","name":"Anyone","id":"anyone","me":true,"requiresKey":false},"role":0}]}
-requestType aclChange
-shareProtocolVersion  2
-shareService  explorer
-subapp  10
-token cUkkt0IBAAA.iZ3E6Yll3l2mHuSqtkPO6w.mv0-Wi6VZr54hEC4pJimnA
-ui  4

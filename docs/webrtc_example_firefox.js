@@ -1,17 +1,13 @@
-function setChannelEvents(channel, channelNameForConsoleOutput) {
-    channel.onmessage = function (event) {
-        console.debug(channelNameForConsoleOutput, 'received a message:', event.data);
-    };
-    channel.onopen = function () {
-        channel.send('first text message over SCTP data ports');
-    };
-}
-
-function useless() {}
-
 var iceServers = {
-    iceServers: [
-    ]
+    iceServers: []
+};
+
+var mediaConstraints = {
+    optional: [],
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
 };
 
 var offerer = new mozRTCPeerConnection(iceServers),
@@ -33,14 +29,6 @@ navigator.mozGetUserMedia({
     }, null, mediaConstraints);
 
 }, useless);
-
-var mediaConstraints = {
-    optional: [],
-    mandatory: {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-    }
-};
 
 function createAnswer(offerSDP) {
     answerer = new mozRTCPeerConnection(iceServers);
@@ -66,3 +54,15 @@ function createAnswer(offerSDP) {
 
     }, useless);
 }
+
+function setChannelEvents(channel, channelNameForConsoleOutput) {
+    channel.onmessage = function (event) {
+        console.debug(channelNameForConsoleOutput, 'received a message:', event.data);
+    };
+    channel.onopen = function () {
+        channel.send('first text message over SCTP data ports');
+    };
+}
+
+function useless() {}
+

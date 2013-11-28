@@ -1,9 +1,5 @@
 var iceServers = {
-    iceServers: [
-    /*{
-        url: 'stun:stun.l.google.com:19302'
-    }*/
-    ]
+    iceServers: []
 };
 
 var optionalRtpDataChannels = {
@@ -12,7 +8,7 @@ var optionalRtpDataChannels = {
     }]
 };
 
-var offerer = new RTCPeerConnection(iceServers, optionalRtpDataChannels),
+var offerer = new webkitRTCPeerConnection(iceServers, optionalRtpDataChannels),
     answerer, answererDataChannel;
 
 var offererDataChannel = offerer.createDataChannel('RTCDataChannel', {
@@ -40,7 +36,7 @@ offerer.createOffer(function (sessionDescription) {
 
 
 function createAnswer(offerSDP) {
-    answerer = new RTCPeerConnection(iceServers, optionalRtpDataChannels);
+    answerer = new webkitRTCPeerConnection(iceServers, optionalRtpDataChannels);
     answererDataChannel = answerer.createDataChannel('RTCDataChannel', {
         reliable: false
     });
