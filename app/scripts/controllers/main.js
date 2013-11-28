@@ -70,7 +70,7 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
 
       answerer = new RTCPeerConnection(iceServers, optionalRtpDataChannels);
 
-      answerer.ondatachannel = function (event) {          
+      answerer.ondatachannel = function (event) {
         answererDataChannel = event.channel;
         setChannelEvents(answererDataChannel, 'answerer');
       };
@@ -88,10 +88,8 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
           answerer.setRemoteDescription(offerSDP);
 
           // It's now safe to call addIceCandidate in Chrome
-          if (webrtcDetectedBrowser == 'chrome') {
-            for (var index in offererIceCandidatesCache) {
-              answerer.addIceCandidate(offererIceCandidatesCache[index]);
-            }
+          for (var index in offererIceCandidatesCache) {
+            answerer.addIceCandidate(offererIceCandidatesCache[index]);
           }
 
           answerer.createAnswer(function (sessionDescription) {
