@@ -16,87 +16,74 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
 
   // this shit only works in chrome
 
-  var PC = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+function setChannelEvents(channel, channelNameForConsoleOutput) {
+    channel.onmessage = function (event) {
+        console.debug(channelNameForConsoleOutput, 'received a message:', event.data);
+    };
+    channel.onopen = function () {
+        channel.send('first text message over SCTP data ports');
+    };
+}
 
-  var iceServers = {
-      iceServers: [
-      /*{
-          url: 'stun:stun.l.google.com:19302'
-      }*/
-      ]
-  };
+function useless() {}
 
-  var optionalRtpDataChannels = {
-      optional: [{
-          RtpDataChannels: true
-      }]
-  };
+var iceServers = {
+    iceServers: [
+    ]
+};
 
-  var offerer = new PC(iceServers, optionalRtpDataChannels),
-      answerer, answererDataChannel;
+var offerer = new RTCPeerConnection(iceServers),
+    answerer, answererDataChannel, offererDataChannel;
 
-  var offererDataChannel = offerer.createDataChannel('RTCDataChannel', {
-      reliable: false
-  });
-  setChannelEvents(offererDataChannel, 'offerer');
+offererDataChannel = offerer.createDataChannel('channel', {});
+//offererDataChannel.binaryType = 'blob';
+setChannelEvents(offererDataChannel, 'offerer');
 
-  offerer.onicecandidate = function (event) {
-      if (!event || !event.candidate) return;
-      answerer && answerer.addIceCandidate(event.candidate);
-      console.log('offerer onicecandidate')
-  };
+getUserMedia({
+    audio: true,
+    fake: true
+}, function (stream) {
+    offerer.addStream(stream);
 
-  var mediaConstraints = {
-      optional: [],
-      mandatory: {
-          OfferToReceiveAudio: false, // Hmm!!
-          OfferToReceiveVideo: false // Hmm!!
-      }
-  };
+    offerer.createOffer(function (sessionDescription) {
+        offerer.setLocalDescription(sessionDescription);
+        createAnswer(sessionDescription);
+    }, null, mediaConstraints);
 
-  offerer.createOffer(function (sessionDescription) {
-      offerer.setLocalDescription(sessionDescription);
-      createAnswer(sessionDescription);
-  }, null, mediaConstraints);
+}, useless);
 
+var mediaConstraints = {
+    optional: [],
+    mandatory: {
+        OfferToReceiveAudio: true,
+        OfferToReceiveVideo: true
+    }
+};
 
-  function createAnswer(offerSDP) {
-      answerer = new PC(iceServers, optionalRtpDataChannels);
-      answererDataChannel = answerer.createDataChannel('RTCDataChannel', {
-          reliable: false
-      });
+function createAnswer(offerSDP) {
+    answerer = new RTCPeerConnection(iceServers);
+    answerer.ondatachannel = function (event) {
+        answererDataChannel = event.channel;
+        answererDataChannel.binaryType = 'blob';
+        setChannelEvents(answererDataChannel, 'answerer');
+    };
 
-      setChannelEvents(answererDataChannel, 'answerer');
+    getUserMedia({
+        audio: true,
+        fake: true
+    }, function (stream) {
 
-      answerer.onicecandidate = function (event) {
-          if (!event || !event.candidate) return;
-          offerer && offerer.addIceCandidate(event.candidate);
-          console.log('answerer onicecandidate')
-      };
+        answerer.addStream(stream);
+        answerer.setRemoteDescription(offerSDP);
 
-      answerer.setRemoteDescription(offerSDP);
-      answerer.createAnswer(function (sessionDescription) {
-          answerer.setLocalDescription(sessionDescription);
-          offerer.setRemoteDescription(sessionDescription);
-      }, null, mediaConstraints);
-  }
+        answerer.createAnswer(function (sessionDescription) {
+            answerer.setLocalDescription(sessionDescription);
 
-  function setChannelEvents(channel, channelNameForConsoleOutput) {
-    console.log(channelNameForConsoleOutput, 'setChannelEvents')
-      channel.onmessage = function (event) {
-          console.debug(channelNameForConsoleOutput, 'received a message:', event.data);
-      };
+            offerer.setRemoteDescription(sessionDescription);
+        }, null, mediaConstraints);
 
-      channel.onopen = function () {
-          channel.send('first text message over RTP data ports');
-      };
-      channel.onclose = function (e) {
-          console.error(e);
-      };
-      channel.onerror = function (e) {
-          console.error(e);
-      };
-  }
+    }, useless);
+}
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 

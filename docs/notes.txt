@@ -32,6 +32,9 @@ JavaScript Drive API
 WebRTC
 
 - https://www.webrtc-experiment.com/docs/rtc-datachannel-for-beginners.html
+-- working example for both ff and chrome
+
+- https://www.webrtc-experiment.com/docs/rtc-datachannel-for-beginners.html
 - http://stackoverflow.com/questions/14134090/how-is-a-webrtc-peer-connection-established
 
 - http://stackoverflow.com/questions/17391750/remote-videostream-not-working-with-webrtc
