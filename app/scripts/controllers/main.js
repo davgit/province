@@ -58,17 +58,16 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
   var offerer = new $window.RTCPeerConnection(iceServers, optionalRtpDataChannels), answerer, answererDataChannel;
 
   var offererDataChannel = offerer.createDataChannel('channel', { reliable: false });
-   
   setChannelEvents(offererDataChannel, 'offerer');
 
   var offererIceCandidatesCache = [];
 
-  // Never called in Firefox
+  // Only called in Chrome
   offerer.onicecandidate = function (event) {
     if (!event || !event.candidate) {
       return;
     }
-    // In Chrome onicecandidate is called before setRemoteDescription so we'll just cache the candidates for later use
+    // onicecandidate bugs and is called before setRemoteDescription so we'll just cache the candidates for later use
     if (answerer) {
       offererIceCandidatesCache.push(event.candidate);
     }
@@ -94,31 +93,32 @@ angular.module('provinceApp').controller('MainCtrl', function ($rootScope, $scop
       setChannelEvents(answererDataChannel, 'answerer');
     };
 
+    // Only called in Chrome
+    answerer.onicecandidate = function (event) {
+      if (!event || !event.candidate) {
+        return;
+      }
+      if (offerer) {
+        offerer.addIceCandidate(event.candidate);
+      }
+    };
+
     $window.getUserMedia(userMediaOptions, function (stream) {
 
       answerer.addStream(stream);
 
-      // Never called in Firefox
-      answerer.onicecandidate = function (event) {
-        if (!event || !event.candidate) {
-          return;
-        }
-        if (offerer) {
-          offerer.addIceCandidate(event.candidate);
-        }
-      };
-
       answerer.setRemoteDescription(offerSDP);
-
-      // It's now safe to call addIceCandidate in Chrome
-      for (var index in offererIceCandidatesCache) {
-        answerer.addIceCandidate(offererIceCandidatesCache[index]);
-      }
 
       answerer.createAnswer(function (sessionDescription) {
         answerer.setLocalDescription(sessionDescription);
         offerer.setRemoteDescription(sessionDescription);
       }, null, mediaConstraints);
+
+
+      // It's now safe to call addIceCandidate in Chrome
+      for (var index in offererIceCandidatesCache) {
+        answerer.addIceCandidate(offererIceCandidatesCache[index]);
+      }
 
     }, fail);
   }
