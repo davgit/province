@@ -63,7 +63,7 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
           $log.debug('Initializing the model first time...');
           var map = model.createMap();
           model.getRoot().set(realtime.collaborativeMapName, map);
-          $log.debug('Initialized model: ' + model.getRoot().toString())
+          $log.debug('Initialized model: ' + model.getRoot().toString());
         });
       });
     },
@@ -72,11 +72,9 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
     // and: http://stackoverflow.com/questions/12092056/google-drive-api-adding-and-updating-permissions
     shareForEveryone: function(fileId) {
     
-      var listReq = gapi.client.drive.permissions.list({ 'fileId': fileId });
+      var listReq = $window.gapi.client.drive.permissions.list({ 'fileId': fileId });
      
-      listReq.execute(function(resp) {
-
-        var permissionId = resp.items[0].id;
+      listReq.execute(function() {
 
         var body = {
           'value': 'anyone',
@@ -84,7 +82,7 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
           'role': 'writer'
         };
 
-        var permReq = gapi.client.drive.permissions.insert({
+        var permReq = $window.gapi.client.drive.permissions.insert({
           'fileId': fileId,
           'resource': body
         });

@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 var RTCPeerConnection = null;
 var getUserMedia = null;
 var attachMediaStream = null;
@@ -133,3 +134,4 @@ if (navigator.mozGetUserMedia) {
 } else {
   console.log("Browser does not appear to be WebRTC-capable");
 }
+/* jshint ignore:end */
