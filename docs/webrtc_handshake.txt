@@ -1,67 +1,72 @@
-  01. client1 creates peer connection
-  02. client1 creates data channel (and adds event handler functions to it)
-  03. client1 adds onicecandidate event handler
-  04. client1 calls getUserMedia
-  05. client1 adds stream
-  06. client1 creates offer and adds it to local description
+ 1. client1 creates peer connection
+ 2. client1 creates data channel (and adds event handler functions to it)
+ 3. client1 adds onicecandidate event handler
+ 4. client1 calls getUserMedia
+ 5. client1 adds stream
+ 6. client1 creates offer and adds it to local description
 
-  07. client2 creates peer connection
-  08. client2 adds ondatachannel event handler
-  08. client2 adds onicecandidate event handler (Chrome only)
-  09. client2 calls getUserMedia
-  10. client2 adds stream
-  11. client2 sets client1 offer as remote description
-  12. client2 creates an answer and adds it to local description
-  13. client2 calls addIceCandidate with the candidates client1 generated in step 03 (Chrome only)
+ 7. client2 creates peer connection
+ 8. client2 adds ondatachannel event handler
+ 8. client2 adds onicecandidate event handler (Chrome only)
+ 9. client2 calls getUserMedia
+10. client2 adds stream
+11. client2 sets client1 offer as remote description
+12. client2 creates an answer and adds it to local description
+13. client2 calls addIceCandidate with the candidates client1 generated in step 03 (Chrome only)
 
-  14. client1 sets the client1 answer to remote description
+14. client1 sets the client1 answer to remote description
 
-  --------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
 
-  Note that multiple PeerConnections are required for creating multiple p2p connections.
+Note that multiple PeerConnections are required for creating multiple p2p connections.
 
-  --------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
 
-  Dataset planning
+Dataset planning
 
-  - 1st client generates an offer
-  - 2nd client checks the dataset and finds the offer
-  - 2nd client generates an answer
-  - 1st client picks up the answer and establishes a p2p connection
-  - 2nd client generates an offer for the next client to pick up
+- 1st client generates an offer
+- 2nd client checks the dataset and finds the offer
+- 2nd client generates an answer
+- 1st client picks up the answer and establishes a p2p connection
+- 2nd client generates an offer for the next client to pick up
 
-  clients: [
+clients: [
+  
+  {
     
-    {
-      
-      name: '1st',
+    id: '1st',
 
-      offers: [
-        {
-          targetClientName: '2nd',
-          'offer': '<sdp>',
-          processed: <false|true>,
-          iceCandidates: [
-            'candidateString',
-            ...
-          ]
-        },
+    offers: [
+      {
+        targetClientId: '2nd',
+        'offer': '<sdp>',
+        processed: <false|true>,
+        iceCandidates: [
+          'candidateString',
+          ...
+        ]
+      },
 
-        ...
-      ],
+      ...
+    ],
 
-      answers: [
-        { 
-          targetClientName: '2nd',
-          'answer': '<sdp>',
-          processed: <false|true>
-        },
+    answers: [
+      { 
+        targetClientId: '2nd',
+        'answer': '<sdp>',
+        processed: <false|true>
+      },
 
-        ...
-      ]
-    },
+      ...
+    ]
+  },
 
-    '2nd': {
+  {
+    
+    id: '2nd',
 
-    }
-  ]
+    ...
+  }
+]
+
+--------------------------------------------------------------------------------------------------------
