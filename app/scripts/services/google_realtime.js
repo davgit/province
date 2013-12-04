@@ -9,10 +9,10 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
 
     fileName: 'provinceClients',
     fileMimeType: 'application/vnd.google-apps.drive-sdk',
-    fileId: '0B9bg9aXL_oUWM0NRZWhyTEQ1Qlk',
-    collaborativeMapName: 'data',
+    fileId: '0B9bg9aXL_oUWWmRzWEZNeTJPcHM',
+    collaborativeListName: 'clients',
 
-    map: null,
+    list: null,
 
     shouldCreateNewRealtimeFile: false,
 
@@ -38,21 +38,32 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
     },
 
     // Load the realtime file from Google Drive
-    // getRoot() and getRoot().get(...) returns https://developers.google.com/drive/realtime/reference/gapi.drive.realtime.CollaborativeMap
+    // getRoot() returns https://developers.google.com/drive/realtime/reference/gapi.drive.realtime.CollaborativeMap
+    // getRoot().get(...) returns https://developers.google.com/drive/realtime/reference/gapi.drive.realtime.CollaborativeList
     handleModelLoad: function(model) {
 
-      var map = realtime.map = model.getModel().getRoot().get(realtime.collaborativeMapName);
+      var list = realtime.list = model.getModel().getRoot().get(realtime.collaborativeListName);
 
-      map.addEventListener($window.gapi.drive.realtime.EventType.VALUE_CHANGED, function() {
-        $rootScope.$emit('realtimeValueChanged', map);
+      //list.clear();
+
+      list.addEventListener($window.gapi.drive.realtime.EventType.VALUES_ADDED, function() {
+        $rootScope.$emit('realtimeValueChanged', list);
       });
 
-      $rootScope.$emit('realtimeLoaded');
+      list.addEventListener($window.gapi.drive.realtime.EventType.VALUES_REMOVED, function() {
+        $rootScope.$emit('realtimeValueChanged', list);
+      });
+
+      list.addEventListener($window.gapi.drive.realtime.EventType.VALUES_SET, function() {
+        $rootScope.$emit('realtimeValueChanged', list);
+      });
+
+      $rootScope.$emit('realtimeLoaded', list);
     },
 
     createNewRealtimeFile: function() {
 
-      $window.gapi.client.drive.files.insert({'resource': { fileId: 'asdasda', mimeType: realtime.fileMimeType, title: realtime.fileName }}).execute(function(file) {
+      $window.gapi.client.drive.files.insert({'resource': { fileId: '', mimeType: realtime.fileMimeType, title: realtime.fileName }}).execute(function(file) {
         
         $log.debug('File recreated, id: ' + file.id);
 
@@ -61,8 +72,8 @@ angular.module('provinceApp').factory('GoogleRealtime', function($window, State,
 
         $window.gapi.drive.realtime.load(file.id, function() {}, function(model) {
           $log.debug('Initializing the model first time...');
-          var map = model.createMap();
-          model.getRoot().set(realtime.collaborativeMapName, map);
+          var list = model.createList();
+          model.getRoot().set(realtime.collaborativeListName, list);
           $log.debug('Initialized model: ' + model.getRoot().toString());
         });
       });
